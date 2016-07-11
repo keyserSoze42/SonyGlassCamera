@@ -14,7 +14,7 @@ import android.widget.RemoteViews;
  */
 public class LiveCardViewFinderService extends Service {
 
-    private static final String LIVE_CARD_TAG = "LiveCardViewFinderService";
+    private static final String LIVE_CARD_TAG = "LiveCardService";
 
     private LiveCard mLiveCard;
 
@@ -28,12 +28,13 @@ public class LiveCardViewFinderService extends Service {
         if (mLiveCard == null) {
             mLiveCard = new LiveCard(this, LIVE_CARD_TAG);
 
-            RemoteViews remoteViews = new RemoteViews(getPackageName(), R.layout.live_card_view_finder);
-            mLiveCard.setViews(remoteViews);
+            LiveCardRenderer renderer = new LiveCardRenderer(this);
+            mLiveCard.setDirectRenderingEnabled(true).getSurfaceHolder().addCallback(renderer);
 
             // Display the options menu when the live card is tapped.
             Intent menuIntent = new Intent(this, LiveCardMenuActivity.class);
             mLiveCard.setAction(PendingIntent.getActivity(this, 0, menuIntent, 0));
+            mLiveCard.attach(this);
             mLiveCard.publish(PublishMode.REVEAL);
         } else {
             mLiveCard.navigate();
