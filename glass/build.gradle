@@ -14,7 +14,7 @@ android {
     defaultConfig {
         applicationId "keysersoze.com.sonyglasscamera"
         minSdkVersion 19
-        targetSdkVersion 23
+        targetSdkVersion 19
         versionCode 1
         versionName "1.0"
     }
@@ -27,5 +27,6 @@ android {
 }
 
 dependencies {
-    compile fileTree(dir: 'libs', include: ['*.jar'])
+    compile group:'sony.libs.api', name: 'SonySDK', version: '2.30'
+    compile group:'sony.libs.api', name: 'sonyandroidlib', version: '2.30'
 }

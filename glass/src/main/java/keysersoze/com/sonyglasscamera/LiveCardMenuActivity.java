@@ -2,19 +2,38 @@ package keysersoze.com.sonyglasscamera;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.os.Bundle;
+import android.util.Log;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.WindowManager;
+
+import java.io.IOException;
+
+import sony.sdk.cameraremote.SimpleRemoteApi;
 
 /**
  * A transparent {@link Activity} displaying a "Stop" options menu to remove the {@link LiveCard}.
  */
 public class LiveCardMenuActivity extends Activity {
 
+    private static SimpleRemoteApi mRemoteApi;
+
+    @Override
+    public void onCreate(Bundle savedInstance){
+        super.onCreate(savedInstance);
+        Log.i("LiveCardActivity", "onCreate");
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+        mRemoteApi = SimpleRemoteApi.getInstance();
+    }
+
     @Override
     public void onAttachedToWindow() {
         super.onAttachedToWindow();
         // Open the options menu right away.
         openOptionsMenu();
+
     }
 
     @Override
@@ -40,5 +59,20 @@ public class LiveCardMenuActivity extends Activity {
         super.onOptionsMenuClosed(menu);
         // Nothing else to do, finish the Activity.
         finish();
+    }
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event){
+        if(keyCode == KeyEvent.KEYCODE_CAMERA) {
+            try {
+                mRemoteApi.actTakePicture();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return true;
+        }else {
+            return super.onKeyDown(keyCode, event);
+        }
+
     }
 }
